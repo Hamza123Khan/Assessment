@@ -1,0 +1,26 @@
+- name: Configure EC2 instance
+  hosts: web
+  become: yes
+  vars:
+    html_content: "Hello, World!"
+  tasks:
+    - name: Update and upgrade apt packages
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Deploy HTML file
+      copy:
+        content: "{{ html_content }}"
+        dest: /var/www/html/index.html
+
+    - name: Ensure Nginx is running and enabled
+      service:
+        name: nginx
+        state: started
+        enabled: yes
